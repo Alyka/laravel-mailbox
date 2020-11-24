@@ -13,7 +13,7 @@ use ZBateson\MailMimeParser\Header\AddressHeader;
 use ZBateson\MailMimeParser\Header\Part\AddressPart;
 use ZBateson\MailMimeParser\Message as MimeMessage;
 use ZBateson\MailMimeParser\Message\Part\MessagePart;
-use App\Library\MailBox\Concerns\InboundEmail as InboundEmailSupport;
+use App\Library\Mailbox\Concerns\InboundEmail as InboundEmailSupport;
 
 class InboundEmail extends \Model
 {
