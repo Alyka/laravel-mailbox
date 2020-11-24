@@ -7,6 +7,7 @@ use BeyondCode\Mailbox\Drivers\MailCare;
 use BeyondCode\Mailbox\Drivers\Mailgun;
 use BeyondCode\Mailbox\Drivers\Postmark;
 use BeyondCode\Mailbox\Drivers\SendGrid;
+use BeyondCode\Mailbox\Drivers\ElasticEmail;
 use Illuminate\Support\Manager;
 
 class MailboxManager extends Manager
@@ -39,6 +40,11 @@ class MailboxManager extends Manager
     public function createPostmarkDriver()
     {
         return new Postmark;
+    }
+	
+	public function createElasticEmailDriver()
+    {
+        return new ElasticEmail;
     }
 
     public function getDefaultDriver()

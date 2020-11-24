@@ -13,9 +13,12 @@ use ZBateson\MailMimeParser\Header\AddressHeader;
 use ZBateson\MailMimeParser\Header\Part\AddressPart;
 use ZBateson\MailMimeParser\Message as MimeMessage;
 use ZBateson\MailMimeParser\Message\Part\MessagePart;
+use App\Library\MailBox\Concerns\InboundEmail as InboundEmailSupport;
 
-class InboundEmail extends Model
+class InboundEmail extends \Model
 {
+	use InboundEmailSupport;
+	
     protected $table = 'mailbox_inbound_emails';
 
     /** @var MimeMessage */
@@ -43,17 +46,17 @@ class InboundEmail extends Model
 
     public function id(): string
     {
-        return $this->message()->getHeaderValue('Message-Id', Str::random());
+        return $this->getMessage()->getHeaderValue('Message-Id', Str::random());
     }
 
     public function date(): Carbon
     {
-        return Carbon::make($this->message()->getHeaderValue('Date'));
+        return Carbon::make($this->getMessage()->getHeaderValue('Date'));
     }
 
     public function text(): ?string
     {
-        return $this->message()->getTextContent();
+        return $this->getMessage()->getTextContent();
     }
 
     public function visibleText(): ?string
@@ -63,22 +66,22 @@ class InboundEmail extends Model
 
     public function html(): ?string
     {
-        return $this->message()->getHtmlContent();
+        return $this->getMessage()->getHtmlContent();
     }
 
     public function headerValue($headerName): ?string
     {
-        return $this->message()->getHeaderValue($headerName, null);
+        return $this->getMessage()->getHeaderValue($headerName, null);
     }
 
     public function subject(): ?string
     {
-        return $this->message()->getHeaderValue('Subject');
+        return $this->getMessage()->getHeaderValue('Subject');
     }
 
     public function from(): string
     {
-        $from = $this->message()->getHeader('From');
+        $from = $this->getMessage()->getHeader('From');
 
         if ($from instanceof AddressHeader) {
             return $from->getEmail();
@@ -89,7 +92,7 @@ class InboundEmail extends Model
 
     public function fromName(): string
     {
-        $from = $this->message()->getHeader('From');
+        $from = $this->getMessage()->getHeader('From');
 
         if ($from instanceof AddressHeader) {
             return $from->getPersonName();
@@ -103,7 +106,7 @@ class InboundEmail extends Model
      */
     public function to(): array
     {
-        return $this->convertAddressHeader($this->message()->getHeader('To'));
+        return $this->convertAddressHeader($this->getMessage()->getHeader('To'));
     }
 
     /**
@@ -111,7 +114,7 @@ class InboundEmail extends Model
      */
     public function cc(): array
     {
-        return $this->convertAddressHeader($this->message()->getHeader('Cc'));
+        return $this->convertAddressHeader($this->getMessage()->getHeader('Cc'));
     }
 
     /**
@@ -119,7 +122,7 @@ class InboundEmail extends Model
      */
     public function bcc(): array
     {
-        return $this->convertAddressHeader($this->message()->getHeader('Bcc'));
+        return $this->convertAddressHeader($this->getMessage()->getHeader('Bcc'));
     }
 
     protected function convertAddressHeader($header): array
@@ -136,10 +139,10 @@ class InboundEmail extends Model
      */
     public function attachments()
     {
-        return $this->message()->getAllAttachmentParts();
+        return $this->getMessage()->getAllAttachmentParts();
     }
 
-    public function message(): MimeMessage
+    public function getMessage(): MimeMessage
     {
         $this->mimeMessage = $this->mimeMessage ?: MimeMessage::from($this->message);
 
@@ -162,7 +165,7 @@ class InboundEmail extends Model
         return Mail::send([], [], function ($message) use ($recipients) {
             $message->to($recipients)
                 ->subject($this->subject())
-                ->setBody($this->body(), $this->message()->getContentType());
+                ->setBody($this->body(), $this->getMessage()->getContentType());
         });
     }
 
