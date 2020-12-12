@@ -10,7 +10,7 @@ class ElasticEmail implements DriverInterface
     public function register()
     {
         Route::prefix(config('mailbox.path'))->group(function () {
-            Route::post('/elasticemail', ElasticEmailController::class);
+            Route::post('/elastic-email', ElasticEmailController::class);
         });
     }
 }

@@ -10,7 +10,7 @@ class ElasticEmailController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('laravel-mailbox');
+        // $this->middleware('laravel-mailbox');
     }
 
     public function __invoke(ElasticEmailRequest $request)
